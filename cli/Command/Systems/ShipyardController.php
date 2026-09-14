@@ -4,12 +4,12 @@ namespace Phparch\SpaceTradersCLI\Command\Systems;
 
 use InvalidArgumentException;
 use Minicli\Command\CommandController;
-use Phparch\SpaceTradersRest\Client;
 use Phparch\SpaceTraders\ServiceContainer;
-use Phparch\SpaceTraders\Trait\TerminalOutputHelper;
+use Phparch\SpaceTradersRest\Client;
 use Phparch\SpaceTradersRest\Value\Waypoint;
 use Phparch\SpaceTradersCLI\Command\HelpInfo;
 use Phparch\SpaceTradersCLI\Render;
+use Phparch\SpaceTradersCLI\Trait\TerminalOutputHelper;
 
 #[HelpInfo(description: "Show details about a waypoint that has a shipyard")]
 class ShipyardController extends CommandController

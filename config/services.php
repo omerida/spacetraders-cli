@@ -23,8 +23,12 @@ use Psr\EventDispatcher\ListenerProviderInterface;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 function getSpaceTradersToken(): string {
-    $registry = ServiceContainer::get(Data\SystemRegistry::class);
-    return $registry->getString('spacetraders_token') ?? '';
+    $token = ServiceContainer::getEnv('spacetraders_token');
+    if ($token) {
+        assert(is_string($token));
+        return $token;
+    }
+    return '';
 }
 
 return [
@@ -70,25 +74,6 @@ return [
             ServiceContainer::get(EventDispatcherInterface::class),
         );
     },
-    DBAL\Connection::class => static function(): DBAL\Connection {
-        if (!isset($_ENV['DATABASE_DSN'])) {
-            throw new \RuntimeException('Database DSN is not defined');
-        }
-        assert(is_string($_ENV['DATABASE_DSN']));
-        $dsn = $_ENV['DATABASE_DSN'];
-        $dsnParser = new DBAL\Tools\DsnParser();
-        return DBAL\DriverManager::getConnection($dsnParser->parse($dsn));
-    },
-    Data\SystemRegistry::class => static function(): Data\SystemRegistry {
-        return new Data\SystemRegistry(
-            ServiceContainer::get(DBAL\Connection::class),
-        );
-    },
-    EventDispatcherInterface::class => static function(): EventDispatcherInterface {
-        return new Crell\Tukio\Dispatcher(
-            ServiceContainer::get(ListenerProviderInterface::class),
-        );
-    },
     Predis\Client::class => static function () {
         return new Predis\Client($_ENV['REDIS_URI']);
     },
@@ -115,94 +100,5 @@ return [
         $stack = GuzzleHttp\HandlerStack::create();
         $stack->push(new CacheMiddleware($strategy), 'cache');
         return new GuzzleHttp\Client(['handler' => $stack]);
-    },
-    ListenerProviderInterface::class => static function(): ListenerProviderInterface {
-        $provider =new \Crell\Tukio\OrderedListenerProvider(
-            ServiceContainer::instance()
-        );
-        // register events based on attributes on methods in ListenerService
-        $provider->addSubscriber(SpaceTraders\Event\ListenerService::class);
-        return $provider;
-    },
-    ORM\EntityManagerInterface::class => static function(): EntityManager {
-        $config = Doctrine\ORM\ORMSetup::createAttributeMetadataConfig(
-            paths: [__DIR__ .'/../src/Entity'],
-            isDevMode: true,
-        );
-        $config->enableNativeLazyObjects(true);
-
-        $connection = ServiceContainer::get(DBAL\Connection::class);
-        return new EntityManager($connection, $config);
-    },
-    Repository\EventRecord::class => static function(): Repository\EventRecord {
-        $em = ServiceContainer::get(ORM\EntityManagerInterface::class);
-        return $em->getRepository(Entity\EventRecord::class);
-    },
-    Repository\MarketTradeGoodsActivity::class => static function(): Repository\MarketTradeGoodsActivity {
-        $em = ServiceContainer::get(ORM\EntityManagerInterface::class);
-        return $em->getRepository(Entity\MarketTradeGoodsActivity::class);
-    },
-    Routes\Scanner::class => static function () {
-        return new Routes\Scanner(
-            controllerDirs: [
-                [
-                    'namespace' => 'Phparch\\SpaceTraders',
-                    'path' => dirname(__DIR__) . '/src/Controller/'
-                ]
-            ],
-            ref: ServiceContainer::get(
-                \Roave\BetterReflection\BetterReflection::class
-            ),
-            useAPCu: $_ENV['USE_APCU'] === 1,
-        );
-    },
-    Route\Router::class => static function (): Route\Router {
-        $responseFactory = new Psr7\HttpFactory();
-        $strategy = new Route\Strategy\JsonStrategy($responseFactory);
-        $router = new Route\Router();
-        $router->setStrategy($strategy);
-        // Register Middleware Components
-        $router->middleware(
-            new Middleware\Auth(getSpaceTradersToken())
-        );
-        $router->middleware(
-            new Middleware\ExceptionDecorator(
-                ServiceContainer::get(\Twig\Environment::class)
-            )
-        );
-
-        return $router;
-    },
-    Routes\Mapper::class => static function () {
-        return new SpaceTraders\Routes\Mapper(
-            scanner: ServiceContainer::get(Routes\Scanner::class),
-            registry: ServiceContainer::get(Routes\Registry::class),
-        );
-    },
-    Routes\Registry::class => static function () {
-        return new Routes\Registry(
-            container: ServiceContainer::instance(),
-            router: ServiceContainer::get(League\Route\Router::class),
-            decorator: ServiceContainer::get(Routes\Decorator::class)
-        );
-
-    },
-    Twig\Environment::class => static function () {
-        $twig = new Twig\Environment(
-            new \Twig\Loader\FilesystemLoader(dirname(__DIR__) . '/templates/'),
-            [
-                'debug' => $_ENV['TWIG_DEBUG'] ?? false,
-                'cache' => dirname(__DIR__) . '/templates_cache/',
-                'auto_reload' => $_ENV['TWIG_AUTORELOAD'] ?? false,
-                'autoescape' => 'html'
-            ]
-        );
-        if ($twig->isDebug()) {
-            $twig->addExtension(new \Twig\Extension\DebugExtension());
-        }
-        $twig->addExtension(
-            new \Twig\Extension\AttributeExtension(TwigExtensions::class)
-        );
-        return $twig;
     },
 ];

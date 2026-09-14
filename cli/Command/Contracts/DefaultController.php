@@ -3,11 +3,11 @@
 namespace Phparch\SpaceTradersCLI\Command\Contracts;
 
 use Minicli\Command\CommandController;
-use Phparch\SpaceTradersRest\Client;
 use Phparch\SpaceTraders\ServiceContainer;
-use Phparch\SpaceTraders\Trait\TerminalOutputHelper;
+use Phparch\SpaceTradersRest\Client;
 use Phparch\SpaceTradersCLI\Command\HelpInfo;
 use Phparch\SpaceTradersCLI\Render\Contract;
+use Phparch\SpaceTradersCLI\Trait\TerminalOutputHelper;
 
 #[HelpInfo(description: "Show My Contracts")]
 class DefaultController extends CommandController

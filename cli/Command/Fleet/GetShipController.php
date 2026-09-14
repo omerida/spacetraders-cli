@@ -4,11 +4,11 @@ namespace Phparch\SpaceTradersCLI\Command\Fleet;
 
 use InvalidArgumentException;
 use Minicli\Command\CommandController;
-use Phparch\SpaceTradersRest\Client;
 use Phparch\SpaceTraders\ServiceContainer;
-use Phparch\SpaceTraders\Trait\TerminalOutputHelper;
+use Phparch\SpaceTradersRest\Client;
 use Phparch\SpaceTradersCLI\Command\HelpInfo;
 use Phparch\SpaceTradersCLI\Render\Ship;
+use Phparch\SpaceTradersCLI\Trait\TerminalOutputHelper;
 
 #[HelpInfo(description: "Get ship info", params: ['ship symbol'])]
 class GetShipController extends CommandController

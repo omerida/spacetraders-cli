@@ -14,7 +14,6 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Phparch\\SpaceTraders\\Tests\\": "tests/"
     }
   },
   "authors": [
@@ -83,17 +82,13 @@
     }
   },
   "scripts": {
-    "check-code": ["@phpcs",  "@phpstan", "@phparkitect", "@twig-lint", "@phpunit"],
-    "fix-code": ["@phpcbf", "@twig-lint-fix"],
+    "check-code": ["@phpcs",  "@phpstan", "@phparkitect"],
+    "fix-code": ["@phpcbf"],
     "phpmd": "vendor/bin/phpmd --ignore-violations-on-exit --ignore-errors-on-exit src text phpmd.xml" ,
     "phpstan": "vendor/bin/phpstan --memory-limit=1G",
-    "phpunit": "vendor/bin/phpunit tests",
     "phpcs": "vendor/bin/phpcs -s",
     "phpcbf": "vendor/bin/phpcbf",
     "churn": "vendor/bin/churn",
-    "phparkitect": "vendor/bin/phparkitect check",
-    "twig-lint": "vendor/bin/twig-cs-fixer lint templates",
-    "twig-lint-fix": "vendor/bin/twig-cs-fixer lint --fix templates",
-    "init-db": "sqlite3 data/spacetraders.sqlite < data/init-db.sql"
+    "phparkitect": "vendor/bin/phparkitect check"
   }
 }

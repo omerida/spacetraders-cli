@@ -3,11 +3,11 @@
 namespace Phparch\SpaceTradersCLI\Command\Agent;
 
 use Minicli\Command\CommandController;
+use Phparch\SpaceTraders\ServiceContainer;
 use Phparch\SpaceTradersCLI\Command\HelpInfo;
 use Phparch\SpaceTradersCLI\Render;
+use Phparch\SpaceTradersCLI\Trait\TerminalOutputHelper;
 use Phparch\SpaceTradersRest\Client;
-use Phparch\SpaceTraders\ServiceContainer;
-use Phparch\SpaceTraders\Trait\TerminalOutputHelper;
 use Phparch\SpaceTradersRest\Exception\APIAuthentication;
 use Phparch\SpaceTradersRest\Exception\APIFailure;
 

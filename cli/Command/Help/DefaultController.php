@@ -2,14 +2,12 @@
 
 namespace Phparch\SpaceTradersCLI\Command\Help;
 
-use Minicli\Command\CommandController;
-use Phparch\SpaceTradersRest\Client;
-use Phparch\SpaceTraders\ServiceContainer;
-use Phparch\SpaceTraders\Trait\TerminalOutputHelper;
-use Phparch\SpaceTradersCLI\Command\HelpInfo;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
+use Minicli\Command\CommandController;
+use Phparch\SpaceTradersCLI\Command\HelpInfo;
+use Phparch\SpaceTradersCLI\Trait\TerminalOutputHelper;
 
 #[HelpInfo(description: "Show registered commands")]
 class DefaultController extends CommandController

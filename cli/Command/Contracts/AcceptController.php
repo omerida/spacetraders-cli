@@ -4,11 +4,11 @@ namespace Phparch\SpaceTradersCLI\Command\Contracts;
 
 use InvalidArgumentException;
 use Minicli\Command\CommandController;
-use Phparch\SpaceTradersRest\Client;
 use Phparch\SpaceTraders\ServiceContainer;
-use Phparch\SpaceTraders\Trait\TerminalOutputHelper;
+use Phparch\SpaceTradersRest\Client;
 use Phparch\SpaceTradersCLI\Command\HelpInfo;
 use Phparch\SpaceTradersCLI\Render;
+use Phparch\SpaceTradersCLI\Trait\TerminalOutputHelper;
 
 #[HelpInfo(description: "Accept a contract", params: ["contract ID"])]
 class AcceptController extends CommandController

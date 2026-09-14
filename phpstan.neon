@@ -10,12 +10,6 @@ parameters:
     level: 10
 
     paths:
-        - src
         - cli
         - config
-
-services:
-    -
-        class: Phparch\SpaceTraders\PHPStan\ControllerMethodSignatureRule
-        tags:
-            - phpstan.rules.rule
+        - src
